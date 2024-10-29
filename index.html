@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Yt thumbnail Downloader </title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Thumbnail Downloader</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+        }
+        h1 {
+            color: #f2f2f2;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #ccc;
+            text-align: center;
+        }
+        
+        /* Container styling */
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            margin-top: 10px;
+        }
+        
+        /* Input styling */
+        input[type="url"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #fff;
+            color: #333;
+        }
+        
+        /* Button styling */
+        button {
+            padding: 12px 20px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #ff4b2b;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #ff2c1f;
+        }
+        
+        /* Thumbnail styling */
+        img {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* FAQ and About styling */
+        .info {
+            max-width: 500px;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: left;
+        }
+        .info h2 {
+            color: #ff4b2b;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        .info h3 {
+            font-size: 1.2em;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .info p {
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 30px;
+            color: #ccc;
+            font-size: 14px;
+            text-align: center;
+        }
+        footer a {
+            color: #ff4b2b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>YouTube Thumbnail Downloader</h1>
+    <p>Quickly download high-quality thumbnails from any YouTube video!</p>
+    
+    <div class="container">
+        <p><strong>How to use:</strong> Paste the YouTube video URL below and click "Get Thumbnail."</p>
+        <input type="url" id="videoUrl" placeholder="Enter YouTube video URL" required>
+        <button onclick="getThumbnail()">Get Thumbnail</button>
+        <button onclick="clearThumbnail()">Clear</button>
+        
+        <div id="thumbnailContainer"></div>
+    </div>
+    
+    <div class="info">
+        <h2>About This Page</h2>
+        <p>This tool allows you to easily download high-quality thumbnails from any YouTube video by simply pasting the video URL. Our website is designed to be quick, easy, and efficient.</p>
+        
+        <h2>Frequently Asked Questions</h2>
+        
+        <h3>1. How do I use this website?</h3>
+        <p>Paste the full YouTube video URL into the input box, then click "Get Thumbnail." The thumbnail will appear below, along with a button to download it directly.</p>
+
+        <h3>2. Why are some thumbnails low quality?</h3>
+        <p>If the highest quality thumbnail isn't available, we load the next best option. Most videos have at least a high-quality (HQ) option.</p>
+
+        <h3>3. Why isn't the thumbnail loading?</h3>
+        <p>Ensure that you entered a valid YouTube URL. If it still doesn’t work, the video may not have an accessible thumbnail.</p>
+
+        <h2>Disclaimer</h2>
+        <p>We are not affiliated with or endorsed by YouTube. This tool is intended for personal use only.</p>
+    </div>
+    
+    <footer>
+        <p>Follow me on Twitter for more updates: <a href="https://twitter.com/Rajasf2r" target="_blank">@Rajasf2r</a></p>
+        <p>Contact us at: <a href="mailto:bigintostudios@gmail.com">bigintostudios@gmail.com</a></p>
+    </footer>
+
+    <script>
+        // Function to extract video ID from various YouTube URL formats
+        function getVideoId(url) {
+            const urlPattern = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|embed|watch)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(urlPattern);
+            return match ? match[1] : null;
+        }
+
+        // Function to get and display the thumbnail
+        function getThumbnail() {
+            const url = document.getElementById('videoUrl').value;
+            const videoId = getVideoId(url);
+            if (videoId) {
+                const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+                document.getElementById('thumbnailContainer').innerHTML = `
+                    <img src="${thumbnailUrl}" alt="Thumbnail" onerror="this.src='https://img.youtube.com/vi/${videoId}/hqdefault.jpg'">
+                    <a href="${thumbnailUrl}" download="thumbnail.jpg">
+                        <button>Download Thumbnail</button>
+                    </a>
+                `;
+            } else {
+                alert('Please enter a valid YouTube video URL.');
+            }
+        }
+
+        // Function to clear input and thumbnail display
+        function clearThumbnail() {
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('thumbnailContainer').innerHTML = '';
+        }
+    </script>
+
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
